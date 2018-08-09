@@ -27,8 +27,20 @@ class Game(models.Model):
     GRID_SIZE = 10
 
     opponent_grid = ArrayField(
-        ArrayField(models.CharField(max_length=1, choices=GameCell.choices(), default=GameCell.EMPTY),
+        ArrayField(models.CharField(max_length=1, choices=GameCell.choices(), default=GameCell.EMPTY.value),
                    size=GRID_SIZE),
         size=GRID_SIZE)
 
-    game_status = models.CharField(max_length=20, choices=GameStatus.choices(), default=GameStatus.IN_PROGRESS)
+    game_status = models.CharField(max_length=20, choices=GameStatus.choices(), default=GameStatus.IN_PROGRESS.value)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.reset_grid()
+
+    def attack_cell(self, row, column):
+        pass
+
+    def reset_grid(self):
+        self.opponent_grid = [
+            [GameCell.EMPTY.value for _ in range(0, Game.GRID_SIZE)] for _ in range(0, Game.GRID_SIZE)
+        ]
