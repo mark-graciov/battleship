@@ -25,3 +25,8 @@ class GameSerializer(serializers.ModelSerializer):
 class AttackCellSerializer(serializers.Serializer):
     row = serializers.IntegerField(required=True, min_value=0, max_value=Game.GRID_SIZE - 1)
     column = serializers.IntegerField(required=True, min_value=0, max_value=Game.GRID_SIZE - 1)
+
+
+class AttackResponseSerializer(serializers.Serializer):
+    attackStatus = serializers.CharField(source='attack_status.value', read_only=True)
+    game = GameSerializer(read_only=True)

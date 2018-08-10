@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from battleship_game.models import Game
-from battleship_game.serializers import GameSerializer, AttackCellSerializer
+from battleship_game.serializers import GameSerializer, AttackCellSerializer, AttackResponseSerializer
 
 
 class GameViewSet(viewsets.ReadOnlyModelViewSet, mixins.CreateModelMixin):
@@ -14,11 +14,10 @@ class GameViewSet(viewsets.ReadOnlyModelViewSet, mixins.CreateModelMixin):
     def attack_cell(self, request, pk=None):
         attack_cell = AttackCellSerializer(data=request.data)
 
-        if attack_cell.is_valid():
+        if attack_cell.is_valid(raise_exception=True):
             game = self.get_object()
             row = attack_cell.validated_data['row']
             col = attack_cell.validated_data['column']
-            result = game.attack_cell(row, col)
-            return Response(result, status=status.HTTP_200_OK)
-        else:
-            return Response(attack_cell.errors, status=status.HTTP_400_BAD_REQUEST)
+            response = game.attack_cell(row, col)
+            response_serializer = AttackResponseSerializer(response)
+            return Response(response_serializer.data, status=status.HTTP_200_OK)

@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from battleship_game.models import Game, GameStatus, GameCell
-from battleship_game.serializers import GameSerializer, AttackCellSerializer
+from battleship_game.models import Game, GameStatus, GameCell, AttackCellResponse, AttackStatus
+from battleship_game.serializers import GameSerializer, AttackCellSerializer, AttackResponseSerializer
 
 
 class GameSerializerTestCase(TestCase):
@@ -28,12 +28,12 @@ class GameSerializerTestCase(TestCase):
         db_objects = Game.objects.all()
 
         self.assertEqual(1, db_objects.count())
-        self.assertEqual(GameStatus.IN_PROGRESS.value, db_objects[0].game_status)
+        self.assertEqual(GameStatus.IN_PROGRESS, GameStatus(db_objects[0].game_status))
 
 
 class AttackCellSerializerTestCase(TestCase):
 
-    def test_valid_data_serialization(self):
+    def test_valid_data_deserialization(self):
         data = {
             'row': 1,
             'column': 2
@@ -42,16 +42,17 @@ class AttackCellSerializerTestCase(TestCase):
         serializer = AttackCellSerializer(data=data)
         self.assertTrue(serializer.is_valid())
 
-    def test_missing_row_serialization(self):
+    def test_missing_row_deserialization(self):
         data = {
         }
 
         serializer = AttackCellSerializer(data=data)
         self.assertFalse(serializer.is_valid())
+        print(serializer.errors)
         self.assertEqual('required', serializer.errors['row'][0].code)
         self.assertEqual('required', serializer.errors['column'][0].code)
 
-    def test_invalid_min_value_serialization(self):
+    def test_invalid_min_value_deserialization(self):
         data = {
             'row': -1,
             'column': -1
@@ -62,7 +63,7 @@ class AttackCellSerializerTestCase(TestCase):
         self.assertEqual('min_value', serializer.errors['row'][0].code)
         self.assertEqual('min_value', serializer.errors['column'][0].code)
 
-    def test_invalid_max_value_serialization(self):
+    def test_invalid_max_value_deserialization(self):
         data = {
             'row': 10,
             'column': 11
@@ -72,3 +73,16 @@ class AttackCellSerializerTestCase(TestCase):
         self.assertFalse(serializer.is_valid())
         self.assertEqual('max_value', serializer.errors['row'][0].code)
         self.assertEqual('max_value', serializer.errors['column'][0].code)
+
+
+class AttackResponseSerializerTestCase(TestCase):
+
+    def test_response_serialization(self):
+        game = Game()
+        response = AttackCellResponse(AttackStatus.INJURED, game)
+
+        game_serializer = GameSerializer(game)
+        response_serializer = AttackResponseSerializer(response)
+
+        self.assertEqual(AttackStatus.INJURED.value, response_serializer.data['attackStatus'])
+        self.assertEqual(game_serializer.data, response_serializer.data['game'])
