@@ -86,6 +86,7 @@ class GameTestCase(TestCase):
         game.save()
 
         result = game.attack_cell(9, 9)
+
         self.assertEqual(AttackStatus.KILLED, result.attack_status)
         self.assertEqual(GameStatus.FINISHED.value, game.game_status)
         self.assertEqual(GameCell.KILLED.value, game.opponent_grid[9][9])
@@ -101,6 +102,7 @@ class GameTestCase(TestCase):
         game.save()
 
         result = game.attack_cell(5, 5)
+
         self.assertEqual(AttackStatus.KILLED, result.attack_status)
         self.assertEqual(GameStatus.IN_PROGRESS.value, game.game_status)
         self.assertEqual(GameCell.KILLED.value, game.opponent_grid[5][5])
@@ -122,6 +124,7 @@ class GameTestCase(TestCase):
         game.save()
 
         result = game.attack_cell(2, 2)
+
         self.assertEqual(AttackStatus.INJURED, result.attack_status)
         self.assertEqual(GameStatus.IN_PROGRESS.value, game.game_status)
         self.assertEqual(GameCell.INJURED.value, game.opponent_grid[2][2])
@@ -141,6 +144,7 @@ class GameTestCase(TestCase):
         game.save()
 
         result = game.attack_cell(3, 0)
+
         self.assertEqual(AttackStatus.INJURED, result.attack_status)
         self.assertEqual(GameStatus.IN_PROGRESS.value, game.game_status)
         self.assertEqual(GameCell.INJURED.value, game.opponent_grid[3][0])

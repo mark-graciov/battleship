@@ -17,6 +17,7 @@ class GameSerializerTestCase(TestCase):
 
         serializer = GameSerializer(game)
         data = serializer.data
+
         self.assertEqual(1, data['id'])
         self.assertEqual(GameStatus.FINISHED.value, data['status'])
         self.assertEqual(10, len(data['opponentGrid']))
@@ -34,6 +35,7 @@ class GameSerializerTestCase(TestCase):
 
         serializer = GameSerializer(game)
         data = serializer.data
+
         self.assertEqual(1, data['id'])
         self.assertEqual(GameStatus.FINISHED.value, data['status'])
         self.assertEqual(10, len(data['opponentGrid']))
@@ -67,6 +69,7 @@ class AttackCellSerializerTestCase(TestCase):
         }
 
         serializer = AttackCellSerializer(data=data)
+
         self.assertFalse(serializer.is_valid())
         print(serializer.errors)
         self.assertEqual('required', serializer.errors['row'][0].code)
@@ -79,6 +82,7 @@ class AttackCellSerializerTestCase(TestCase):
         }
 
         serializer = AttackCellSerializer(data=data)
+
         self.assertFalse(serializer.is_valid())
         self.assertEqual('min_value', serializer.errors['row'][0].code)
         self.assertEqual('min_value', serializer.errors['column'][0].code)
@@ -90,6 +94,7 @@ class AttackCellSerializerTestCase(TestCase):
         }
 
         serializer = AttackCellSerializer(data=data)
+
         self.assertFalse(serializer.is_valid())
         self.assertEqual('max_value', serializer.errors['row'][0].code)
         self.assertEqual('max_value', serializer.errors['column'][0].code)

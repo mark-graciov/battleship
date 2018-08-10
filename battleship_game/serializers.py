@@ -37,6 +37,16 @@ class GameSerializer(serializers.ModelSerializer):
         return instance
 
 
+class GameListSerializer(GameSerializer):
+    """
+    Limited serializer for list ob games
+    """
+
+    class Meta:
+        model = Game
+        fields = ('id', 'status')
+
+
 class AttackCellSerializer(serializers.Serializer):
     """
     Write only serializer for attack cell calls

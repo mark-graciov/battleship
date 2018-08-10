@@ -3,12 +3,19 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from battleship_game.models import Game
-from battleship_game.serializers import GameSerializer, AttackCellSerializer, AttackResponseSerializer
+from battleship_game.serializers import GameSerializer, AttackCellSerializer, AttackResponseSerializer, \
+    GameListSerializer
 
 
 class GameViewSet(viewsets.ReadOnlyModelViewSet, mixins.CreateModelMixin):
     queryset = Game.objects.all()
     serializer_class = GameSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return GameListSerializer
+        else:
+            return GameSerializer
 
     @action(detail=True, methods=['post'], url_path='attack', url_name='attack')
     def attack_cell(self, request, pk=None):
