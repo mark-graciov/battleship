@@ -14,6 +14,18 @@ class GameTestCase(TestCase):
         self.assertEqual(GameStatus.IN_PROGRESS.value, game.game_status)
         self.assertEqual(Game.GRID_SIZE, len(game.opponent_grid))
 
+    def test_save_new_game(self):
+        game = Game()
+        game.opponent_grid[0][0] = GameCell.SHIP.value
+        game.save()
+
+        all_games = Game.objects.all()
+
+        self.assertEqual(1, len(all_games))
+        self.assertEqual(GameStatus.IN_PROGRESS.value, all_games[0].game_status)
+        self.assertEqual(GameCell.SHIP.value, all_games[0].opponent_grid[0][0])
+
+
     def test_reset_grid(self):
         game = Game()
         game.opponent_grid[1][1] = GameCell.SHIP.value

@@ -9,7 +9,7 @@ The game is unidirectional - only the player attacks the opponent's board until 
 - `GET games/` - get all games (in progress and finished)
 - `POST games/` - create a new random game
 - `GET games/<id>/` - get a game with the given <id>
-- `POST games/<id>/attack` - attack a cell in the game. 
+- `POST games/<id>/attack/` - attack a cell in the game. 
 Requires a payload of row and column. e.g. `{"row": 3, "column": 4}`
 
 ## Installation

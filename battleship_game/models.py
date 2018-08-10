@@ -46,6 +46,10 @@ class GameCell(DBEnum):
 
 
 class Game(models.Model):
+    """
+    Battleship game model.
+    Defines the status and the opponent grid
+    """
     GRID_SIZE = 10
 
     opponent_grid = ArrayField(
@@ -57,11 +61,13 @@ class Game(models.Model):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.reset_grid()
+
+        if self.opponent_grid is None:
+            self.reset_grid()
 
     def reset_grid(self):
         """
-        Reset the grid to all EMPTY
+        Reset the grid to GRID_SIZE x GRID_SIZE all EMPTY
         """
         self.opponent_grid = [
             [GameCell.EMPTY.value for _ in range(0, Game.GRID_SIZE)] for _ in range(0, Game.GRID_SIZE)
