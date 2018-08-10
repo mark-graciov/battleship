@@ -40,6 +40,10 @@ class GameCell(DBEnum):
     def alive_cells(cls):
         return [cls.SHIP, cls.INJURED]
 
+    @classmethod
+    def hidden_cells(cls):
+        return [cls.SHIP]
+
 
 class Game(models.Model):
     GRID_SIZE = 10
