@@ -60,11 +60,21 @@ class Game(models.Model):
         self.reset_grid()
 
     def reset_grid(self):
+        """
+        Reset the grid to all EMPTY
+        """
         self.opponent_grid = [
             [GameCell.EMPTY.value for _ in range(0, Game.GRID_SIZE)] for _ in range(0, Game.GRID_SIZE)
         ]
 
-    def attack_cell(self, row, column):
+    def attack_cell(self, row, column) -> AttackCellResponse:
+        """
+        Attack a cell on the opponent grid.
+        Returns the attack result and updates the board and game status according to the ships left
+        :param row: attack row
+        :param column: attack column
+        :return: AttackCellResponse
+        """
         cell_value = self.opponent_grid[row][column]
 
         if GameStatus(self.game_status) is GameStatus.FINISHED or GameCell(cell_value) in GameCell.opened_cells():
@@ -77,6 +87,7 @@ class Game(models.Model):
 
         if GameCell(cell_value) is GameCell.SHIP:
             if self._is_last_ship_cell(row, column):
+                # kill
                 self._kill_ship(row, column)
                 if self._opponent_ship_cells_left() == 0:
                     self.game_status = GameStatus.FINISHED.value
@@ -84,6 +95,7 @@ class Game(models.Model):
                 self.save()
                 return AttackCellResponse(AttackStatus.KILLED, self)
             else:
+                # injure
                 self.opponent_grid[row][column] = GameCell.INJURED.value
                 self._mark_corners_missed(row, column)
                 self.save()
